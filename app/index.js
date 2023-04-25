@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Animated, Text, TouchableOpacity } from "react-native"
+import { StyleSheet, View, Animated, Text, TouchableOpacity, Platform } from "react-native"
 import { Stack } from "expo-router"
 import { SplashScreen, useRouter } from "expo-router"
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -105,7 +105,7 @@ export default function Index() {
           </TouchableWithoutFeedback>
         </View>
         <TouchableOpacity activeOpacity={0.6} onPress={onBottomInfoPress} style={styles.footer}>
-          <Text style={styles.footer.text}>Powerd by 99</Text>
+          <Text style={[styles.footerText, Platform.OS === 'android' ? styles.footerAndroid : {}]}>Powerd by 99</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </>
@@ -132,9 +132,12 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
-    marginBottom: 15,
-    text: {
-      color: '#909399',
-    }
+  },
+  footerAndroid: {
+    marginBottom: 15
+  },
+  footerText: {
+    color: '#909399',
+    paddingVertical: 10,
   }
 })
