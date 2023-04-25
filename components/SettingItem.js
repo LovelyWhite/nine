@@ -18,7 +18,7 @@ export default SettingItem
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height: 90,
+        height: 70,
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',

@@ -16,3 +16,7 @@ export const biu = async (userId, message) => {
     }
     await axios.post(`${BASE_URL}/user/${userId}/biu`, { message })
 }
+export const loveText = async () => {
+    let { data } = await axios.get('https://api.mcloc.cn/love')
+    return data
+}

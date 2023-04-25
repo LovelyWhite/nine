@@ -3,7 +3,7 @@ import { FlashList } from "@shopify/flash-list"
 import SettingItem from "../components/SettingItem"
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
 import { useState } from "react"
-import { setSettings, getSettings } from '../engine/utils'
+import { setSettings, getSettings, loveText } from '../engine/utils'
 import Toast from "react-native-root-toast"
 const settingList = [
   {
@@ -19,6 +19,7 @@ const settingList = [
 ]
 function Setting() {
   const [modalVisible, setModalVisible] = useState(false)
+  const [canClickRandomText, setCanClickRandomText] = useState(true)
   const [modalText, changeModalText] = useState('')
   let [currentSettingIndex, changeCurrentSettingIndex] = useState(0)
   const onItemPress = async (index) => {
@@ -34,6 +35,13 @@ function Setting() {
     await setSettings(settings)
     setModalVisible(false)
     Toast.show('设置成功', { duration: Toast.durations.SHORT })
+  }
+
+  const onRandomTextClick = () => {
+    setCanClickRandomText(false)
+    loveText().then(text => {
+      changeModalText(text)
+    }).finally(() => { setCanClickRandomText(true) })
   }
 
   return <>
@@ -69,6 +77,13 @@ function Setting() {
               style={styles.modalTextInput}
               onChangeText={changeModalText}
               value={modalText} />
+            {(currentSettingIndex == 0) &&
+              <TouchableOpacity disabled={!canClickRandomText}
+                activeOpacity={0.6}
+                onPress={onRandomTextClick}
+                style={styles.randomButton}>
+                <Text style={styles.randomButtonText}>随机一条 {!canClickRandomText && "..."}</Text>
+              </TouchableOpacity>}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    paddingHorizontal: 20,
+    paddingLeft: 20,
   },
   modalTitle: {
     fontSize: 16,
@@ -109,7 +124,10 @@ const styles = StyleSheet.create({
   },
   modalComplete: {
     fontSize: 16,
-    color: '#1D8CE0'
+    color: '#1D8CE0',
+    height: 60,
+    paddingHorizontal: 20,
+    textAlignVertical: 'center',
   },
   modalView: {
     backgroundColor: 'white',
@@ -119,10 +137,22 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.12,
     shadowRadius: 10
+  },
+  randomButton: {
+    transform: [{ translateY: -30 }],
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  randomButtonText: {
+    width: 70,
+    height: 30,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: '#475669'
   }
 })
 

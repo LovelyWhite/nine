@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
+    "android": "adb reverse tcp:19000 tcp:19000 & expo start --android --localhost",
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
