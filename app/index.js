@@ -12,9 +12,11 @@ import {
 import { Stack } from 'expo-router'
 import { SplashScreen, useRouter } from 'expo-router'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { AntDesign } from '@expo/vector-icons'
 import HeartRain from '../components/HeartRain'
-import { biu, getSettings } from '../engine/utils'
+import { getSettings } from '../engine/utils'
 import Toast from 'react-native-root-toast'
+import { biu } from '../engine/user'
 
 export default function Index() {
   const router = useRouter()
@@ -74,12 +76,12 @@ export default function Index() {
 
   const sendBiu = async () => {
     try {
-      Toast.show('biu~biu~biu~', { duration: Toast.durations.SHORT })
-      const settings = await getSettings()
-      await biu(settings.userId, settings.message)
+      Toast.show('正在提醒对方～', { duration: Toast.durations.SHORT })
+      const { message } = await getSettings()
+      await biu(message)
       Toast.show('已成功提醒对方啦～', { duration: Toast.durations.SHORT })
     } catch (e) {
-      Toast.show(e.toString(), { duration: Toast.durations.SHORT })
+      Toast.show(e.message, { duration: Toast.durations.SHORT })
     }
   }
 
@@ -105,7 +107,7 @@ export default function Index() {
       })
   }, [])
 
-  const onBottomInfoPress = () => {
+  const onSettingPress = () => {
     router.push('/setting')
   }
 
@@ -117,11 +119,19 @@ export default function Index() {
     container: {
       flex: 1,
     },
-    headerButtons: {
+    headerButtonsContainer: {
       position: 'absolute',
-      top: inserts.top,
-      right: inserts.right + 10,
+      top: inserts.top + 10,
+      right: inserts.right + 15,
       zIndex: 1,
+    },
+    headerButton: {
+      marginBottom: 5,
+      padding: 5,
+      alignItems: 'center',
+    },
+    headerButtonText: {
+      color: '#1F2D3DAA',
     },
     noteBotton: {
       width: 50,
@@ -148,7 +158,7 @@ export default function Index() {
     },
     footerText: {
       color: '#909399',
-      paddingVertical: 10,
+      paddingVertical: 5,
     },
   })
 
@@ -158,12 +168,30 @@ export default function Index() {
       {!isReady && <SplashScreen />}
       <HeartRain ref={heartRain} />
       <SafeAreaView style={styles.container}>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity activeOpacity={0.6} onPress={onNotePress}>
-            <Image
-              style={styles.noteBotton}
-              source={require('../assets/note-icon.png')}
-            />
+        <View style={styles.headerButtonsContainer}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            activeOpacity={0.6}
+            onPress={onNotePress}
+          >
+            <AntDesign name='edit' size={25} color='black' />
+            <Text style={styles.headerButtonText}>记事</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            activeOpacity={0.6}
+            onPress={() => Toast.show('正在开发~')}
+          >
+            <AntDesign name='hdd' size={25} color='black' />
+            <Text style={styles.headerButtonText}>历史</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            activeOpacity={0.6}
+            onPress={onSettingPress}
+          >
+            <AntDesign name='setting' size={25} color='black' />
+            <Text style={styles.headerButtonText}>设置</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.heart}>
@@ -172,7 +200,7 @@ export default function Index() {
             onPressIn={onHeartImgPressIn}
             onPressOut={onHeartImgPressOut}
           >
-            <Animated.View
+            <Animated.Image
               style={[
                 styles.heartImg,
                 {
@@ -181,21 +209,13 @@ export default function Index() {
                     { scale: heartImgScaleValue },
                   ],
                 },
-                { borderWidth: 1 },
               ]}
-            ></Animated.View>
-            {/* <Animated.Image
-              style={[styles.heartImg, { transform: [{ translateY: -100 }, { scale: heartImgScaleValue }] }]}
-              source={require("../assets/heart.png")}
-              contentFit="contain"
-            /> */}
+              source={require('../assets/heart.png')}
+              contentFit='contain'
+            />
           </TouchableWithoutFeedback>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          onPress={onBottomInfoPress}
-          style={styles.footer}
-        >
+        <View style={styles.footer}>
           <Text
             style={[
               styles.footerText,
@@ -204,7 +224,7 @@ export default function Index() {
           >
             Powerd by 99
           </Text>
-        </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </>
   )

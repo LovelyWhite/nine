@@ -23,10 +23,16 @@ const SETTING_LIST = {
     description: '设置下一次将发送给对方的文字',
     showArrow: true,
   },
-  userId: {
+  sendToId: {
     type: 'textInput',
     title: '发送对象',
     description: '你的爱心将发送给该对象',
+    showArrow: true,
+  },
+  userId: {
+    type: 'textInput',
+    title: '我的 ID',
+    description: '设置自己的 ID',
     showArrow: true,
   },
   version: {
@@ -67,7 +73,7 @@ function Setting() {
           Toast.show('更新成功~', { duration: Toast.durations.SHORT })
         })
         .catch((err) => {
-          Toast.show(err.toString())
+          Toast.show(err.message)
         })
     }
   }
@@ -85,6 +91,9 @@ function Setting() {
     loveText()
       .then((text) => {
         changeModalText(text)
+      })
+      .catch((e) => {
+        Toast.show(e.message, { duration: Toast.durations.SHORT })
       })
       .finally(() => {
         setCanClickRandomText(true)
