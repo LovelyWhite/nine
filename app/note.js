@@ -2,19 +2,23 @@ import React, { useRef, useState } from 'react'
 import { Text, TouchableOpacity, StyleSheet, Alert, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { FlashList } from '@shopify/flash-list'
+import Tooltip from 'rn-tooltip'
 import { Stack, useRouter } from 'expo-router'
 import { getNotes } from '../engine/note'
 import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 
 import { Animated } from 'react-native'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { RectButton } from 'react-native-gesture-handler'
+import { MOODS } from '../engine/constants'
 const relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
 export default function Note() {
   const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
   const [data, setData] = useState([])
   const itemRefs = useRef({}).current
   const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +28,8 @@ export default function Note() {
 
   const fetchNotes = async (page) => {
     try {
-      const { items } = await getNotes(page, 20)
+      const { items, total } = await getNotes(page, 20)
+      setTotal(total)
       return items
     } catch (e) {
       Alert.alert('提示', e?.message, [{ text: '确定' }])
@@ -79,12 +84,21 @@ export default function Note() {
         <View style={styles.itemContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.itemTitle}>{item?.title || '未命名记事'}</Text>
-            <View style={styles.headerRight}>
-              <Text style={styles.itemTime}>
-                {dayjs(item.createdAt).fromNow()}
-              </Text>
-              <AntDesign name='right' size={10} color='#00000066' />
-            </View>
+            <Tooltip
+              backgroundColor='#eeeeee88'
+              popover={
+                <Text style={{ color: '#555' }}>
+                  {dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </Text>
+              }
+            >
+              <View style={styles.headerRight}>
+                <Text style={styles.itemTime}>
+                  {dayjs(item.createdAt).fromNow(false)}
+                </Text>
+                <AntDesign name='right' size={12} color='#555' />
+              </View>
+            </Tooltip>
           </View>
           <View style={styles.itemTextContainer}>
             <Text
@@ -94,6 +108,26 @@ export default function Note() {
             >
               {item.text}
             </Text>
+          </View>
+          <View style={styles.itemFooterContainer}>
+            <View style={styles.itemMoodsContainer}>
+              {item?.moods.map((mood) => (
+                <Tooltip
+                  backgroundColor='#eeeeee88'
+                  width={50}
+                  popover={
+                    <Text style={{ color: '#555' }}>
+                      {MOODS[mood].translate}
+                    </Text>
+                  }
+                >
+                  <Text style={styles.itemMood} key={item._id + mood}>
+                    {MOODS[mood].emoji}
+                  </Text>
+                </Tooltip>
+              ))}
+            </View>
+            <Text style={styles.createrText}>From {item.userId}</Text>
           </View>
         </View>
       </Swipeable>
@@ -152,7 +186,7 @@ export default function Note() {
           headerTintColor: '#000',
           headerRight,
           headerBackTitleVisible: false,
-          headerTitle: `记事本(${data.length})`,
+          headerTitle: `记事本(${total})`,
         }}
       />
       <FlashList
@@ -175,10 +209,9 @@ const styles = StyleSheet.create({
   itemContainer: {
     width: '100%',
     backgroundColor: '#fff',
-    justifyContent: 'flex-start',
-    paddingTop: 5,
+    justifyContent: 'center',
     paddingHorizontal: 10,
-    height: 90,
+    height: 120,
   },
   headerRightButton: {
     padding: 5,
@@ -192,10 +225,13 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   itemTextContainer: {},
   itemText: {
     flexWrap: 'wrap',
+    lineHeight: 20,
+    height: 60,
     color: '#999',
   },
   separator: {
@@ -203,18 +239,36 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
   },
   itemTitle: {
+    fontSize: 17,
+    lineHeight: 20,
     fontWeight: 'bold',
   },
   itemTime: {
-    color: '#00000066',
     fontWeight: 'bold',
+    color: '#555',
     textAlign: 'right',
+    width: 80,
   },
   actionText: {
     color: 'white',
     fontSize: 16,
     backgroundColor: 'transparent',
     padding: 10,
+  },
+  itemFooterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  itemMoodsContainer: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  itemMood: {
+    paddingRight: 2,
+    fontSize: 20,
+  },
+  createrText: {
+    color: '#999',
   },
   rightAction: {
     alignItems: 'center',
