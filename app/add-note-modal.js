@@ -1,5 +1,5 @@
 import { Stack, useNavigation } from 'expo-router'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Checkbox from 'expo-checkbox'
 import {
   Alert,
@@ -32,6 +32,7 @@ export default function AddNote() {
   const [moods, setMoods] = useState(MOODS_LIST)
   const [isCompleteDisabled, setCompleteDisabled] = useState(false)
 
+  let titleRef = useRef(null).current
   const navigation = useNavigation()
 
   const onCompleteButtonPress = async () => {
@@ -89,14 +90,17 @@ export default function AddNote() {
       <TextInput
         autoCapitalize='none'
         placeholder='标题～'
+        returnKeyType='next'
         onChangeText={setTitle}
         textAlignVertical='center'
-        style={[styles.textInput, styles.titleInput]}
+        style={styles.titleInput}
         autoFocus={true}
         value={title}
+        onSubmitEditing={() => titleRef.focus()}
         maxLength={30}
       />
       <TextInput
+        ref={(ref) => (titleRef = ref)}
         style={styles.textInput}
         onChangeText={onTextInputChange}
         textAlignVertical='top'
@@ -194,22 +198,21 @@ export default function AddNote() {
               mode='BADGE'
             />
           </View>
-          <View style={styles.privateContainer}>
-            <Checkbox
-              style={styles.privateCheckbox}
-              value={isPrivate}
-              onValueChange={setIsPrivate}
-              color={isPrivate ? '#1D8CE0' : undefined}
-            />
-            <Text
-              onPress={() => {
-                setIsPrivate(!isPrivate)
-              }}
-              style={styles.privateText}
-            >
-              仅自己可见
-            </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setIsPrivate(!isPrivate)
+            }}
+          >
+            <View style={styles.privateContainer}>
+              <Checkbox
+                style={styles.privateCheckbox}
+                value={isPrivate}
+                onValueChange={setIsPrivate}
+                color={isPrivate ? '#1D8CE0' : undefined}
+              />
+              <Text style={styles.privateText}>仅自己可见</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
     </>
@@ -228,8 +231,8 @@ const styles = StyleSheet.create({
     top: 150,
   },
   textCounter: {
-    width: 70,
-    height: 40,
+    width: 60,
+    height: 30,
     textAlign: 'center',
     textAlignVertical: 'center',
     lineHeight: 40,
@@ -245,11 +248,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eeeeeeee',
   },
   titleInput: {
+    backgroundColor: '#fff',
     height: 40,
     paddingHorizontal: 10,
-    fontSize: 20,
+    fontSize: 16,
     borderBottomWidth: 1,
-    paddingBottom: 0,
+    textAlignVertical: 'center',
+    justifyContent: 'center',
   },
   moodsLabelContainer: {
     paddingLeft: 10,
