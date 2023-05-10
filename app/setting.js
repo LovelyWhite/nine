@@ -120,6 +120,7 @@ function Setting() {
           />
         )}
         estimatedItemSize={4}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
       <Modal
         animationType='slide'
@@ -222,6 +223,10 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     lineHeight: 50,
     color: '#475669',
+  },
+  separator: {
+    backgroundColor: 'rgb(200, 199, 204)',
+    height: StyleSheet.hairlineWidth,
   },
 })
 
