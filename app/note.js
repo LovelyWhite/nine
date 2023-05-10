@@ -113,6 +113,7 @@ export default function Note() {
             <View style={styles.itemMoodsContainer}>
               {item?.moods.map((mood) => (
                 <Tooltip
+                  key={item._id + mood}
                   backgroundColor='#eeeeee88'
                   width={50}
                   popover={
@@ -121,9 +122,7 @@ export default function Note() {
                     </Text>
                   }
                 >
-                  <Text style={styles.itemMood} key={item._id + mood}>
-                    {MOODS[mood].emoji}
-                  </Text>
+                  <Text style={styles.itemMood}>{MOODS[mood].emoji}</Text>
                 </Tooltip>
               ))}
             </View>

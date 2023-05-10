@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     textAlignVertical: 'center',
     justifyContent: 'center',
+    borderBottomColor: '#eeeeeeee',
   },
   moodsLabelContainer: {
     paddingLeft: 10,
