@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Platform,
   TouchableWithoutFeedback,
-  Image,
 } from 'react-native'
 import { Stack } from 'expo-router'
 import { SplashScreen, useRouter } from 'expo-router'
@@ -36,17 +35,17 @@ export default function Index() {
         }),
         Animated.timing(heartImgScaleValue, {
           toValue: 0.8,
-          duration: 300,
+          duration: 400,
           useNativeDriver: true,
         }),
         Animated.timing(heartImgScaleValue, {
-          toValue: 1.2,
+          toValue: 1.1,
           duration: 200,
           useNativeDriver: true,
         }),
         Animated.timing(heartImgScaleValue, {
-          toValue: 0.8,
-          duration: 500,
+          toValue: 0.7,
+          duration: 200,
           useNativeDriver: true,
         }),
         Animated.timing(heartImgScaleValue, {
@@ -131,7 +130,7 @@ export default function Index() {
       alignItems: 'center',
     },
     headerButtonText: {
-      color: '#1F2D3DAA',
+      color: '#646464',
     },
     noteBotton: {
       width: 50,
@@ -157,7 +156,7 @@ export default function Index() {
       marginBottom: 15,
     },
     footerText: {
-      color: '#909399',
+      color: '#646464',
       paddingVertical: 5,
     },
   })
@@ -171,7 +170,7 @@ export default function Index() {
         <View style={styles.headerButtonsContainer}>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.6}
+            activeOpacity={0.4}
             onPress={onNotePress}
           >
             <AntDesign name='edit' size={25} color='black' />
@@ -179,7 +178,7 @@ export default function Index() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.6}
+            activeOpacity={0.4}
             onPress={() => Toast.show('正在开发~')}
           >
             <AntDesign name='hdd' size={25} color='black' />
@@ -187,7 +186,7 @@ export default function Index() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.6}
+            activeOpacity={0.4}
             onPress={onSettingPress}
           >
             <AntDesign name='setting' size={25} color='black' />

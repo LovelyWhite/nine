@@ -64,7 +64,7 @@ export default function AddNote() {
     return (
       <TouchableOpacity
         disabled={isCompleteDisabled}
-        activeOpacity={0.6}
+        activeOpacity={0.4}
         onPress={onCompleteButtonPress}
       >
         <Text style={styles.modalComplete}>
@@ -134,13 +134,13 @@ export default function AddNote() {
             <DropDownPicker
               hideSelectedItemIcon={true}
               placeholderStyle={{
-                color: '#475669',
+                color: '#646464',
                 textAlign: 'right',
               }}
               showBadgeDot={false}
               showArrowIcon={false}
-              itemProps={{ activeOpacity: 0.6 }}
-              props={{ activeOpacity: 0.6 }}
+              itemProps={{ activeOpacity: 0.4 }}
+              props={{ activeOpacity: 0.4 }}
               open={isMoodsPickerOpen}
               flatListProps={{
                 initialNumToRender: MOODS_LIST.length,
@@ -150,7 +150,6 @@ export default function AddNote() {
                 borderWidth: 0,
                 borderRadius: 0,
                 paddingHorizontal: 0,
-                backgroundColor: '#00000000',
                 paddingLeft: 10,
               }}
               value={selectedMoods}
@@ -168,7 +167,7 @@ export default function AddNote() {
                 )
               }}
               items={moods}
-              tickIconStyle={{ opacity: 0.6, width: 15, height: 15 }}
+              tickIconStyle={{ opacity: 0.4, width: 15, height: 15 }}
               dropDownContainerStyle={{
                 borderRadius: 5,
                 borderWidth: 0,
@@ -236,7 +235,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     lineHeight: 40,
-    color: '#47566977',
+    color: '#646464',
+    opacity: 0.7,
   },
   textInput: {
     backgroundColor: '#fff',
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   moodsLabel: {
     fontSize: 14,
     textAlignVertical: 'center',
-    color: '#475669',
+    color: '#646464',
   },
   moodsContainer: {
     flex: 1,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   privateText: {
     marginLeft: 5,
     fontSize: 14,
-    color: '#475669',
+    color: '#646464',
   },
   footer: {
     flex: 1,
