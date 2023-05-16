@@ -15,8 +15,15 @@ export const loveText = async () => {
 }
 
 export const get = async (url, params) => {
+  let { userId } = await getSettings()
+  if (!userId) {
+    throw new Error('请先设置我的 ID')
+  }
   try {
-    const { data } = await axios.get(url, { params })
+    const { data } = await axios.get(url, {
+      params,
+      headers: { Authorization: userId },
+    })
     return data
   } catch (e) {
     throw new Error(JSON.stringify(e?.response?.data) || e?.message)
@@ -24,8 +31,14 @@ export const get = async (url, params) => {
 }
 
 export const post = async (url, body) => {
+  let { userId } = await getSettings()
+  if (!userId) {
+    throw new Error('请先设置我的 ID')
+  }
   try {
-    const { data } = await axios.post(url, body)
+    const { data } = await axios.post(url, body, {
+      headers: { Authorization: userId },
+    })
     return data
   } catch (e) {
     throw new Error(JSON.stringify(e?.response?.data) || e?.message)

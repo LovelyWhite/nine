@@ -1,5 +1,6 @@
 // 'http://suxitech.cn:3000'
 // 'http://192.168.31.71:3000'
+// 'http://127.0.0.1:3000'
 
 export const BASE_URL = 'http://suxitech.cn:3000'
 export const SETTING_KEY = 'nine_setting'
