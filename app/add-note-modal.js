@@ -1,5 +1,5 @@
 import { Stack, useNavigation } from 'expo-router'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Checkbox from 'expo-checkbox'
 import {
   Alert,
@@ -32,6 +32,7 @@ export default function AddNote() {
   const [moods, setMoods] = useState(MOODS_LIST)
   const [isCompleteDisabled, setCompleteDisabled] = useState(false)
 
+  let titleRef = useRef(null).current
   const navigation = useNavigation()
 
   const onCompleteButtonPress = async () => {
@@ -63,7 +64,7 @@ export default function AddNote() {
     return (
       <TouchableOpacity
         disabled={isCompleteDisabled}
-        activeOpacity={0.6}
+        activeOpacity={0.4}
         onPress={onCompleteButtonPress}
       >
         <Text style={styles.modalComplete}>
@@ -89,14 +90,17 @@ export default function AddNote() {
       <TextInput
         autoCapitalize='none'
         placeholder='标题～'
+        returnKeyType='next'
         onChangeText={setTitle}
         textAlignVertical='center'
-        style={[styles.textInput, styles.titleInput]}
+        style={styles.titleInput}
         autoFocus={true}
         value={title}
+        onSubmitEditing={() => titleRef.focus()}
         maxLength={30}
       />
       <TextInput
+        ref={(ref) => (titleRef = ref)}
         style={styles.textInput}
         onChangeText={onTextInputChange}
         textAlignVertical='top'
@@ -130,13 +134,13 @@ export default function AddNote() {
             <DropDownPicker
               hideSelectedItemIcon={true}
               placeholderStyle={{
-                color: '#475669',
+                color: '#646464',
                 textAlign: 'right',
               }}
               showBadgeDot={false}
               showArrowIcon={false}
-              itemProps={{ activeOpacity: 0.6 }}
-              props={{ activeOpacity: 0.6 }}
+              itemProps={{ activeOpacity: 0.4 }}
+              props={{ activeOpacity: 0.4 }}
               open={isMoodsPickerOpen}
               flatListProps={{
                 initialNumToRender: MOODS_LIST.length,
@@ -146,7 +150,6 @@ export default function AddNote() {
                 borderWidth: 0,
                 borderRadius: 0,
                 paddingHorizontal: 0,
-                backgroundColor: '#00000000',
                 paddingLeft: 10,
               }}
               value={selectedMoods}
@@ -164,7 +167,7 @@ export default function AddNote() {
                 )
               }}
               items={moods}
-              tickIconStyle={{ opacity: 0.6, width: 15, height: 15 }}
+              tickIconStyle={{ opacity: 0.4, width: 15, height: 15 }}
               dropDownContainerStyle={{
                 borderRadius: 5,
                 borderWidth: 0,
@@ -194,22 +197,21 @@ export default function AddNote() {
               mode='BADGE'
             />
           </View>
-          <View style={styles.privateContainer}>
-            <Checkbox
-              style={styles.privateCheckbox}
-              value={isPrivate}
-              onValueChange={setIsPrivate}
-              color={isPrivate ? '#1D8CE0' : undefined}
-            />
-            <Text
-              onPress={() => {
-                setIsPrivate(!isPrivate)
-              }}
-              style={styles.privateText}
-            >
-              仅自己可见
-            </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setIsPrivate(!isPrivate)
+            }}
+          >
+            <View style={styles.privateContainer}>
+              <Checkbox
+                style={styles.privateCheckbox}
+                value={isPrivate}
+                onValueChange={setIsPrivate}
+                color={isPrivate ? '#1D8CE0' : undefined}
+              />
+              <Text style={styles.privateText}>仅自己可见</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
     </>
@@ -223,33 +225,34 @@ const styles = StyleSheet.create({
     color: '#1D8CE0',
   },
   textCounterContainer: {
-    alignSelf: 'flex-end',
     position: 'absolute',
-    top: 150,
+    top: 155,
+    right: 10,
   },
   textCounter: {
-    width: 70,
-    height: 40,
     textAlign: 'center',
-    textAlignVertical: 'center',
-    lineHeight: 40,
-    color: '#47566977',
+    color: '#646464',
+    opacity: 0.7,
   },
   textInput: {
     backgroundColor: '#fff',
     height: 140,
-    padding: 10,
-    paddingBottom: 40,
+    paddingHorizontal: 5,
+    paddingTop:10,
+    paddingBottom: 30,
     fontSize: 15,
     borderBottomWidth: 0.4,
     borderBottomColor: '#eeeeeeee',
   },
   titleInput: {
+    backgroundColor: '#fff',
     height: 40,
     paddingHorizontal: 10,
-    fontSize: 20,
+    fontSize: 16,
     borderBottomWidth: 1,
-    paddingBottom: 0,
+    textAlignVertical: 'center',
+    justifyContent: 'center',
+    borderBottomColor: '#eeeeeeee',
   },
   moodsLabelContainer: {
     paddingLeft: 10,
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
   moodsLabel: {
     fontSize: 14,
     textAlignVertical: 'center',
-    color: '#475669',
+    color: '#646464',
   },
   moodsContainer: {
     flex: 1,
@@ -278,7 +281,7 @@ const styles = StyleSheet.create({
   privateText: {
     marginLeft: 5,
     fontSize: 14,
-    color: '#475669',
+    color: '#646464',
   },
   footer: {
     flex: 1,

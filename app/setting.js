@@ -138,7 +138,7 @@ function Setting() {
                     {settingList[selectedSetting].title}
                   </Text>
                   <TouchableOpacity
-                    activeOpacity={0.6}
+                    activeOpacity={0.4}
                     onPress={onModalComplete}
                   >
                     <Text style={styles.modalComplete}>完成</Text>
@@ -157,7 +157,7 @@ function Setting() {
                 {selectedSetting == 'message' && (
                   <TouchableOpacity
                     disabled={!canClickRandomText}
-                    activeOpacity={0.6}
+                    activeOpacity={0.4}
                     onPress={onRandomTextClick}
                     style={styles.randomButton}
                   >
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     lineHeight: 50,
-    color: '#475669',
+    color: '#646464',
   },
 })
 

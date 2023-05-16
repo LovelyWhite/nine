@@ -1,17 +1,15 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { View, StyleSheet, Animated, Dimensions } from 'react-native'
-import * as Crypto from "expo-crypto"
+import * as Crypto from 'expo-crypto'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 const HEART_SIZE = 30
 
 const Heart = forwardRef(({ heart }, ref) => {
-  const position = new Animated.ValueXY(
-    {
-      x: parseInt(Crypto.getRandomBytes(4), 16) % SCREEN_WIDTH,
-      y: SCREEN_HEIGHT
-    }
-  )
+  const position = new Animated.ValueXY({
+    x: parseInt(Crypto.getRandomBytes(4), 16) % SCREEN_WIDTH,
+    y: SCREEN_HEIGHT,
+  })
   const [opacity] = useState(new Animated.Value(0))
 
   const startAnimiate = () => {
@@ -21,11 +19,12 @@ const Heart = forwardRef(({ heart }, ref) => {
           toValue: parseInt(Crypto.getRandomBytes(4), 16) % SCREEN_HEIGHT,
           duration: 0,
           useNativeDriver: true,
-        }), Animated.timing(heart.x, {
+        }),
+        Animated.timing(heart.x, {
           toValue: parseInt(Crypto.getRandomBytes(4), 16) % SCREEN_WIDTH,
           duration: 0,
           useNativeDriver: true,
-        })
+        }),
       ]),
       Animated.timing(opacity, {
         toValue: 1,
@@ -51,18 +50,26 @@ const Heart = forwardRef(({ heart }, ref) => {
       ]),
     ]).start()
   }
-  useImperativeHandle(ref, () => {
-    return {
-      startAnimiate
-    }
-  }, [])
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        startAnimiate,
+      }
+    },
+    []
+  )
   return (
     <Animated.Image
-      source={require("../assets/heart.png")}
+      source={require('../assets/heart.png')}
       style={[
         styles.heart,
-        { transform: [{ translateX: heart.x }, { translateY: heart.y }], opacity },
-      ]} />
+        {
+          transform: [{ translateX: heart.x }, { translateY: heart.y }],
+          opacity,
+        },
+      ]}
+    />
   )
 })
 
@@ -79,18 +86,24 @@ const HeartRain = (props, ref) => {
     components.current[i] = React.createRef()
   }
   const startAnimiate = () => {
-    components.current.forEach(e => e.current.startAnimiate())
+    components.current.forEach((e) => e.current.startAnimiate())
   }
-  useImperativeHandle(ref, () => {
-    return {
-      startAnimiate
-    }
-  }, [])
-  return <View pointerEvents='box-none' style={styles.container}>
-    {hearts.map((heart, index) => (
-      <Heart key={index} ref={components.current[index]} heart={heart} />
-    ))}
-  </View>
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        startAnimiate,
+      }
+    },
+    []
+  )
+  return (
+    <View pointerEvents='box-none' style={styles.container}>
+      {hearts.map((heart, index) => (
+        <Heart key={index} ref={components.current[index]} heart={heart} />
+      ))}
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
