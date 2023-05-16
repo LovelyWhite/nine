@@ -5,6 +5,7 @@ import { MasonryFlashList } from '@shopify/flash-list'
 import { Stack, useRouter } from 'expo-router'
 import { getNotes } from '../engine/note'
 import NoteItem from '../components/NoteItem'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function Note() {
   const [page, setPage] = useState(1)
@@ -14,6 +15,7 @@ export default function Note() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const TextCountHeightRatio = useRef(1.1453).current
   const router = useRouter()
+  const { bottom } = useSafeAreaInsets()
 
   const fetchNotes = async (page) => {
     try {
@@ -102,7 +104,7 @@ export default function Note() {
         onRefresh={handleRefreshing}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
-        contentContainerStyle={{ paddingHorizontal: 5 }}
+        contentContainerStyle={{ paddingHorizontal: 5, paddingBottom: bottom }}
       />
     </>
   )
