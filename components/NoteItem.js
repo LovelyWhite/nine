@@ -8,18 +8,21 @@ import {
 import Tooltip from 'rn-tooltip'
 import { Feather } from '@expo/vector-icons'
 import { MOODS } from '../engine/constants'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { changePrivate } from '../engine/note'
 import Toast from 'react-native-root-toast'
 
 const NoteItem = ({ item }) => {
   const [isPrivate, setIsPrivate] = useState(item.isPrivate)
+  useEffect(() => {
+    setIsPrivate(item.isPrivate)
+  }, [item])
   const onPrivateButtonPress = async () => {
     try {
       const { isPrivate } = await changePrivate(item._id)
       setIsPrivate(isPrivate)
     } catch (e) {
-      Toast.show('')
+      Toast.show(e?.message, Toast.durations.SHORT)
     }
   }
   return (
@@ -116,7 +119,6 @@ const styles = StyleSheet.create({
     color: '#646464',
   },
   itemTitle: {
-    fontSize: 16,
     fontWeight: 'bold',
   },
   itemTime: {
