@@ -138,7 +138,7 @@ function Setting() {
                     {settingList[selectedSetting].title}
                   </Text>
                   <TouchableOpacity
-                    activeOpacity={0.4}
+                    activeOpacity={0.5}
                     onPress={onModalComplete}
                   >
                     <Text style={styles.modalComplete}>完成</Text>
@@ -157,7 +157,7 @@ function Setting() {
                 {selectedSetting == 'message' && (
                   <TouchableOpacity
                     disabled={!canClickRandomText}
-                    activeOpacity={0.4}
+                    activeOpacity={0.5}
                     onPress={onRandomTextClick}
                     style={styles.randomButton}
                   >

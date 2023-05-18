@@ -3,17 +3,21 @@ import {
   View,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native'
 import Tooltip from 'rn-tooltip'
-import { Feather } from '@expo/vector-icons'
+import { Feather, AntDesign } from '@expo/vector-icons'
 import { MOODS } from '../engine/constants'
 import { useEffect, useState } from 'react'
 import { changePrivate } from '../engine/note'
 import Toast from 'react-native-root-toast'
+import { useRouter } from 'expo-router'
 
 const NoteItem = ({ item }) => {
   const [isPrivate, setIsPrivate] = useState(item.isPrivate)
+  const [showRef, setShowRef] = useState(false)
+  const router = useRouter()
   useEffect(() => {
     setIsPrivate(item.isPrivate)
   }, [item])
@@ -24,6 +28,10 @@ const NoteItem = ({ item }) => {
     } catch (e) {
       Toast.show(e?.message, Toast.durations.SHORT)
     }
+  }
+  const onAddNotePress = () => {
+    router.push('add-note-modal')
+    router.setParams({ refNoteId: item._id, refNoteText: item.text })
   }
   return (
     <View style={styles.itemContainer}>
@@ -49,9 +57,37 @@ const NoteItem = ({ item }) => {
           <Text style={styles.itemTime}>{item.fromNow}</Text>
         </Tooltip>
       </View>
-      <View style={styles.itemTextContainer}>
-        <Text style={styles.itemText}>{item.text}</Text>
-      </View>
+      <TouchableWithoutFeedback
+        activeOpacity={0.5}
+        onLongPress={onAddNotePress}
+      >
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.itemText}>{item.text}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+      {item.refNoteId && (
+        <View style={styles.itemRefContainer}>
+          <TouchableOpacity
+            style={styles.itemRefButton}
+            activeOpacity={0.5}
+            onPress={() => {
+              setShowRef(!showRef)
+            }}
+          >
+            <AntDesign
+              name={showRef ? 'down' : 'right'}
+              size={12}
+              color='#64646499'
+            />
+            <Text style={styles.itemRefButtonText}>引用内容</Text>
+          </TouchableOpacity>
+          {showRef && (
+            <View style={styles.itemRefTextContainer}>
+              <Text style={styles.itemRefText}>{item?.refNote?.text}</Text>
+            </View>
+          )}
+        </View>
+      )}
       <View style={styles.itemFooterContainer}>
         <ScrollView
           horizontal={true}
@@ -74,10 +110,10 @@ const NoteItem = ({ item }) => {
           ))}
         </ScrollView>
         <View style={styles.createrContainer}>
-          <Text style={styles.createrText}>From {item.userId}</Text>
-          {item.owner ? (
+          <Text style={styles.createrText}>{item.userId}</Text>
+          {item.isOwner ? (
             <TouchableOpacity
-              activeOpacity={0.4}
+              activeOpacity={0.5}
               onPress={() => {
                 onPrivateButtonPress(item)
               }}
@@ -113,7 +149,8 @@ const styles = StyleSheet.create({
     height: 25,
   },
   itemTextContainer: {
-    paddingHorizontal: 15,
+    marginHorizontal: 15,
+    marginBottom: 5,
   },
   itemText: {
     color: '#646464',
@@ -127,8 +164,28 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: 70,
   },
+  itemRefButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  itemRefButtonText: {
+    marginLeft: 5,
+    fontSize: 13,
+    color: '#646464',
+  },
+  itemRefContainer: {
+    paddingHorizontal: 10,
+  },
+  itemRefTextContainer: {
+    marginHorizontal: 5,
+    marginBottom: 5,
+  },
+  itemRefText: {
+    fontSize: 12,
+    color: '#707070cc',
+  },
   itemFooterContainer: {
-    marginTop: 5,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     backgroundColor: '#64646422',
@@ -157,7 +214,9 @@ const styles = StyleSheet.create({
     color: '#646464',
   },
   privateButton: {
-    padding: 5,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    paddingRight: 0,
   },
   rightAction: {
     alignItems: 'center',

@@ -11,7 +11,7 @@ export const getNotes = async (page, perPage) => {
   let { userId } = await getSettings()
   res.items = res.items.map((e) => ({
     ...e,
-    owner: userId === e.userId,
+    isOwner: userId === e.userId,
     createdAtText: dayjs(e.createdAt).format('YYYY-MM-DD HH:mm:ss'),
     fromNow: dayjs(e.createdAt).fromNow(false),
   }))

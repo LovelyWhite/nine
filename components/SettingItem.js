@@ -6,7 +6,7 @@ const SettingItem = ({ item, onItemPress }) => {
   return (
     <>
       <TouchableOpacity
-        activeOpacity={0.4}
+        activeOpacity={0.5}
         onPress={onItemPress}
         style={styles.container}
       >
