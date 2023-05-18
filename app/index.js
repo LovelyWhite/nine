@@ -170,7 +170,7 @@ export default function Index() {
         <View style={styles.headerButtonsContainer}>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.4}
+            activeOpacity={0.5}
             onPress={onNotePress}
           >
             <AntDesign name='edit' size={25} color='black' />
@@ -178,7 +178,7 @@ export default function Index() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.4}
+            activeOpacity={0.5}
             onPress={() => Toast.show('正在开发~')}
           >
             <AntDesign name='hdd' size={25} color='black' />
@@ -186,7 +186,7 @@ export default function Index() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
-            activeOpacity={0.4}
+            activeOpacity={0.5}
             onPress={onSettingPress}
           >
             <AntDesign name='setting' size={25} color='black' />

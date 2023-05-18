@@ -6,6 +6,7 @@ import { Stack, useRouter } from 'expo-router'
 import { getNotes } from '../engine/note'
 import NoteItem from '../components/NoteItem'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Toast from 'react-native-root-toast'
 
 export default function Note() {
   const [page, setPage] = useState(1)
@@ -53,6 +54,7 @@ export default function Note() {
         setPage(2)
         setData(newData)
       }
+      Toast.show('刷新成功', { duration: Toast.durations.SHORT })
     })
   }
 
@@ -62,7 +64,7 @@ export default function Note() {
 
   const headerRight = () => {
     return (
-      <TouchableOpacity activeOpacity={0.4} onPress={onAddNotePress}>
+      <TouchableOpacity activeOpacity={0.5} onPress={onAddNotePress}>
         <AntDesign
           style={styles.headerRightButton}
           name='plus'

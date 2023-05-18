@@ -1,5 +1,6 @@
-import { Stack, useNavigation } from 'expo-router'
+import { Stack, useLocalSearchParams, useNavigation } from 'expo-router'
 import React, { useCallback, useRef, useState } from 'react'
+import { AntDesign } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import {
   Alert,
@@ -26,7 +27,7 @@ export default function AddNote() {
   const [title, setTitle] = useState('')
   const [textCount, setTextCount] = useState(0)
   const [isPrivate, setIsPrivate] = useState(true)
-
+  const [showRef, setShowRef] = useState(false)
   const [isMoodsPickerOpen, setIsMoodsPickerOpen] = useState(false)
   const [selectedMoods, setSelectedMoods] = useState(['happy'])
   const [moods, setMoods] = useState(MOODS_LIST)
@@ -34,6 +35,7 @@ export default function AddNote() {
 
   let titleRef = useRef(null).current
   const navigation = useNavigation()
+  const { refNoteId, refNoteText } = useLocalSearchParams()
 
   const onCompleteButtonPress = async () => {
     setCompleteDisabled(true)
@@ -46,6 +48,7 @@ export default function AddNote() {
         moods: selectedMoods,
         isPrivate,
         text,
+        refNoteId,
       })
       Alert.alert(
         '提示',
@@ -64,7 +67,7 @@ export default function AddNote() {
     return (
       <TouchableOpacity
         disabled={isCompleteDisabled}
-        activeOpacity={0.4}
+        activeOpacity={0.5}
         onPress={onCompleteButtonPress}
       >
         <Text style={styles.modalComplete}>
@@ -89,7 +92,7 @@ export default function AddNote() {
       />
       <TextInput
         autoCapitalize='none'
-        placeholder='标题～'
+        placeholder='未命名标题'
         returnKeyType='next'
         onChangeText={setTitle}
         textAlignVertical='center'
@@ -113,6 +116,31 @@ export default function AddNote() {
       <View style={styles.textCounterContainer}>
         <Text style={styles.textCounter}>{`${textCount}/500`}</Text>
       </View>
+      <View>
+        {refNoteId && (
+          <View style={styles.itemRefContainer}>
+            <TouchableOpacity
+              style={styles.itemRefButton}
+              activeOpacity={0.5}
+              onPress={() => {
+                setShowRef(!showRef)
+              }}
+            >
+              <AntDesign
+                name={showRef ? 'down' : 'right'}
+                size={13}
+                color='#646464'
+              />
+              <Text style={styles.itemRefButtonText}>引用内容</Text>
+            </TouchableOpacity>
+            {showRef && (
+              <View style={styles.itemRefTextContainer}>
+                <Text style={styles.itemRefText}>{refNoteText}</Text>
+              </View>
+            )}
+          </View>
+        )}
+      </View>
       <TouchableWithoutFeedback
         onPress={() => {
           setIsMoodsPickerOpen(false)
@@ -127,9 +155,6 @@ export default function AddNote() {
               height: 40,
             }}
           ></View>
-          <View style={styles.moodsLabelContainer}>
-            <Text style={styles.moodsLabel}>心情:</Text>
-          </View>
           <View style={styles.moodsContainer}>
             <DropDownPicker
               hideSelectedItemIcon={true}
@@ -174,7 +199,7 @@ export default function AddNote() {
                 alignSelf: 'flex-start',
                 position: 'relative',
                 top: 1,
-                elevation: 1,
+                elevation: 0.3,
                 shadowColor: '#000',
                 shadowOffset: { height: 10, width: 1 },
                 width: 120,
@@ -219,6 +244,30 @@ export default function AddNote() {
 }
 
 const styles = StyleSheet.create({
+  itemRefButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 10,
+  },
+  itemRefButtonText: {
+    marginLeft: 5,
+    fontSize: 13,
+    color: '#646464',
+  },
+  itemRefContainer: {
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingLeft: 10,
+  },
+  itemRefTextContainer: {
+    marginLeft: 18,
+    width: '80%',
+    paddingVertical: 5,
+  },
+  itemRefText: {
+    fontSize: 12,
+    color: '#707070cc',
+  },
   modalComplete: {
     fontSize: 18,
     padding: 5,
@@ -238,32 +287,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: 140,
     paddingHorizontal: 5,
-    paddingTop:10,
+    paddingTop: 10,
     paddingBottom: 30,
-    fontSize: 15,
-    borderBottomWidth: 0.4,
+    fontSize: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#eeeeeeee',
   },
   titleInput: {
     backgroundColor: '#fff',
     height: 40,
-    paddingHorizontal: 10,
-    fontSize: 16,
+    paddingHorizontal: 5,
+    fontSize: 14,
     borderBottomWidth: 1,
     textAlignVertical: 'center',
     justifyContent: 'center',
     borderBottomColor: '#eeeeeeee',
-  },
-  moodsLabelContainer: {
-    paddingLeft: 10,
-    height: 40,
-    justifyContent: 'center',
-    marginRight: 5,
-  },
-  moodsLabel: {
-    fontSize: 14,
-    textAlignVertical: 'center',
-    color: '#646464',
   },
   moodsContainer: {
     flex: 1,
@@ -280,7 +318,7 @@ const styles = StyleSheet.create({
   },
   privateText: {
     marginLeft: 5,
-    fontSize: 14,
+    fontSize: 13,
     color: '#646464',
   },
   footer: {
