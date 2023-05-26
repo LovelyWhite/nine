@@ -2,20 +2,21 @@ import React, { useRef, useState } from 'react'
 import { TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { MasonryFlashList } from '@shopify/flash-list'
-import { Stack, useRouter } from 'expo-router'
+import { Stack, useNavigation, useRouter } from 'expo-router'
 import { getNotes } from '../engine/note'
 import NoteItem from '../components/NoteItem'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Toast from 'react-native-root-toast'
 
 export default function Note() {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [canLoadMore, setCanLoadMore] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const TextCountHeightRatio = useRef(1.1453).current
   const router = useRouter()
+  const navigation = useNavigation()
   const { bottom } = useSafeAreaInsets()
 
   const fetchNotes = async (page) => {
@@ -30,12 +31,13 @@ export default function Note() {
   }
 
   const handleLoadMore = () => {
-    if (isLoading) {
+    if (!canLoadMore || isLoading) {
       return
     }
     setIsLoading(true)
     fetchNotes(page).then((newData) => {
       setIsLoading(false)
+      setCanLoadMore(false)
       if (newData.length > 0) {
         setPage(page + 1)
         setData([...data, ...newData])
@@ -54,7 +56,6 @@ export default function Note() {
         setPage(2)
         setData(newData)
       }
-      Toast.show('刷新成功', { duration: Toast.durations.SHORT })
     })
   }
 
@@ -74,6 +75,10 @@ export default function Note() {
       </TouchableOpacity>
     )
   }
+  React.useEffect(() => {
+    return navigation.addListener('focus', handleRefreshing)
+  }, [navigation])
+
   const calcHeight = (text) => {
     const textLength = encodeURI(text).split(/%..|./).length - 1
     return textLength / TextCountHeightRatio
@@ -83,9 +88,8 @@ export default function Note() {
     <>
       <Stack.Screen
         options={{
-          headerBackTitle: '返回',
-          headerTintColor: '#000',
           headerBackTitleVisible: false,
+          headerTintColor: '#000',
           headerRight,
           headerTitle: `记事本(${total})`,
         }}
@@ -104,8 +108,9 @@ export default function Note() {
         estimatedItemSize={50}
         refreshing={isRefreshing}
         onRefresh={handleRefreshing}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
+        onMomentumScrollEnd={handleLoadMore}
+        onEndReached={() => setCanLoadMore(true)}
+        onEndReachedThreshold={0.01}
         contentContainerStyle={{ paddingHorizontal: 5, paddingBottom: bottom }}
       />
     </>
