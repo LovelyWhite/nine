@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { EvilIcons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 
 const SettingItem = ({ item, onItemPress }) => {
   const { title, description, extra, showArrow } = item
@@ -10,7 +11,15 @@ const SettingItem = ({ item, onItemPress }) => {
         onPress={onItemPress}
         style={styles.container}
       >
-        <View>
+        <View style={styles.iconContainer}>
+          <AntDesign
+            style={styles.icon}
+            name={item.icon}
+            size={25}
+            color='black'
+          />
+        </View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>
@@ -30,12 +39,20 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 85,
-    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20,
+    paddingVertical: 20,
+    paddingRight: 20,
     flex: 1,
   },
+  iconContainer: {
+    height: 85,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingRight: 20,
+  },
+  icon: {},
   title: {
     fontSize: 17,
     fontWeight: '900',
