@@ -17,32 +17,44 @@ import { setSettings, getSettings, loveText } from '../engine/utils'
 import { createdAt, fetchUpdateAsync } from 'expo-updates'
 import Toast from 'react-native-root-toast'
 const SETTING_LIST = {
+  login: {
+    type: 'clickable',
+    title: '登陆',
+    description: '当前用户名称',
+    extra: '点击登录',
+    icon: 'user',
+    showArrow: true,
+  },
   message: {
     type: 'textInput',
     title: '发送内容',
     description: '设置下一次将发送给对方的文字',
+    icon: 'mail',
     showArrow: true,
   },
   sendToId: {
     type: 'textInput',
     title: '发送对象',
     description: '你的爱心将发送给该对象',
+    icon: 'solution1',
     showArrow: true,
   },
   userId: {
     type: 'textInput',
-    title: '我的 ID',
-    description: '设置自己的 ID',
+    title: '我的 ID (testing)',
+    description: '手动设置登录状态',
+    icon: 'idcard',
     showArrow: true,
   },
   version: {
-    type: 'normal',
-    title: '版本更新推送时间',
-    description: '点击手动更新至最新版本',
+    type: 'clickable',
+    title: '更新',
+    description: '点击更新至最新版本',
     extra: createdAt?.toLocaleString('zh-CN', {
       timeZone: 'Asia/Shanghai',
       hour12: false,
     }),
+    icon: 'earth',
     showArrow: false,
   },
 }
@@ -75,6 +87,10 @@ function Setting() {
         .catch((err) => {
           Toast.show(err.message)
         })
+      return
+    }
+    if (key === 'login') {
+      Toast.show('正在开发~', { duration: Toast.durations.SHORT })
     }
   }
 
