@@ -11,7 +11,7 @@ export const setSettings = async (params) => {
 }
 
 export const loveText = async () => {
-  return await get('https://api.mcloc.cn/love')
+  return await get('https://api.vvhan.com/api/text/love')
 }
 
 export const get = async (url, params) => {
